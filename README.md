@@ -122,11 +122,17 @@ In Spyder3, open the respective file by clicking the open file icon on the toolb
   
 However, it is recommended to run the code in Python edictor such as Spyder3 https://pythonhosted.org/spyder/ to produce images correctly.
 # Cifar 10 Results
+### "Generate images from random latent state"
+![Generate images from random latent state](https://github.com/Po-Hsuan-Huang/Schweighofer-Lab/blob/master/random_generated_imgs_cifar10.png)
 
-![Generate images from random latent state](https://github.com/Po-Hsuan-Huang/Schweighofer-Lab/edit/master/random_generated_imgs_cifar10.png "Generate images from random latent state")
-![Encode Image](https://github.com/Po-Hsuan-Huang/Schweighofer-Lab/edit/master/encode_imgs_cifar10.png "Encode Image")
-![Decode Image](https://github.com/Po-Hsuan-Huang/Schweighofer-Lab/edit/master/decode_imgs_cifar10.png "Decode Image")
-![Interpolate Image](https://github.com/Po-Hsuan-Huang/Schweighofer-Lab/edit/master/interpolate_imgs_cifar10.png "Interpolate Images from latent space")
+### "Encode Image"
+![Encode Image](https://github.com/Po-Hsuan-Huang/Schweighofer-Lab/blob/master/encode_imgs_cifar10.png )
+
+### "Decode Image"
+![Decode Image](https://github.com/Po-Hsuan-Huang/Schweighofer-Lab/blob/master/decode_imgs_cifar10.png)
+
+### "Interpolate Images from latent space"
+![Interpolate Image](https://github.com/Po-Hsuan-Huang/Schweighofer-Lab/blob/master/interpolate_imgs_cifar10.png )
 
 * [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
