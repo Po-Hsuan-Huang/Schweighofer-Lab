@@ -75,7 +75,7 @@ training_op = optimizer.minimize(loss)
 init = tf.global_variables_initializer()
 
 n_digits = 40
-n_epochs = 1000
+n_epochs = 200 
 batch_size = 150
 SAVED_PATH ='/home/pohsuanh/Documents/Schweighofer Lab/variational_cifar.ckpt'
 with tf.Session() as sess:
@@ -100,7 +100,7 @@ with tf.Session() as sess:
             sess.run(training_op, feed_dict={X: X_batch})
         loss_val, reconstruction_loss_val, latent_loss_val = sess.run([loss, reconstruction_loss, latent_loss], feed_dict={X: X_batch}) # not shown
         print("\r{}".format(epoch), "Train total loss:", loss_val, "\tReconstruction loss:", reconstruction_loss_val, "\tLatent loss:", latent_loss_val)  # not shown
-        saver.save(sess, SAVED_PATH)  # not shown
+        saver.save(sess, SAVED_PATH,   )  # not shown
     
     codings_rnd = np.random.normal(size=[n_digits, n_hidden3])
     outputs_val = outputs.eval(feed_dict={hidden3: codings_rnd})
@@ -134,10 +134,12 @@ def encode_decode():
     
     
     with tf.Session() as sess:
-        saver.restore(sess, SAVED_PATH)
+        init.run()
+        saver = tf.train.import_meta_graph(SAVED_PATH + '.meta')
+        saver.restore(sess, tf.train.latest_checkpoint(os.path.dirname(SAVED_PATH)))
         print( '''Encode''' )
         codings_val = codings.eval(feed_dict={X:X_eval})
-    
+
         print( '''Decode''' )    
         outputs_val = outputs.eval(feed_dict={codings: codings_val})
     
