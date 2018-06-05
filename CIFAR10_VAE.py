@@ -4,20 +4,34 @@
 Created on Sat Jun  2 23:33:00 2018
 
 @author: pohsuanh
+
+
+Variational autoencoder on CIFAR10 dataset.
+
+run ''python CIFAR10_VAE.py''  to train the model in terminal.
+
+In Spyder editor, run 'generate_random_img()', 'encode_decode()','interpolate_digits()' to evaluate training results.
+
 """
+
 # Common imports
 import numpy as np
 import sys, os
 import tensorflow as tf
 import matplotlib.pyplot as plt
-# to make this notebook's output stable across runs
+from functools import partial
+
+"""Training"""
 
 
 
+
+# Load CIFAR10
 (x_train, y_train), (x_test, y_test) = tf.keras.datasets.cifar10.load_data()
 #x_whiten = np.sum( x_train.astype(np.float16), axis = 3 )/3
 x_squash = np.divide(x_train.astype(np.float16),255)
 num_examples = x_train.shape[0]
+
 def get_next( X , batch_size ):
     global x_last_batch_index
     
@@ -25,17 +39,12 @@ def get_next( X , batch_size ):
     next_batch = np.roll(x_squash, batch_size, axis = 0)[:batch_size]
     return next_batch
     
-    
-
-
 def reset_graph(seed=42):
     tf.reset_default_graph()
     tf.set_random_seed(seed)
     np.random.seed(seed)
+    
 reset_graph()
-
-from functools import partial
-
 n_inputs = 32 * 32 * 3
 n_hidden1 = 500
 n_hidden2 = 500
@@ -75,9 +84,9 @@ training_op = optimizer.minimize(loss)
 init = tf.global_variables_initializer()
 
 n_digits = 40
-n_epochs = 200 
+n_epochs = 2
 batch_size = 150
-SAVED_PATH ='/home/pohsuanh/Documents/Schweighofer Lab/variational_cifar.ckpt'
+SAVED_PATH ='/home/pohsuanh/Documents/Schweighofer-Lab/ckpts/variational_cifar.ckpt'
 with tf.Session() as sess:
     
     print('initailize graph variables')
@@ -90,6 +99,9 @@ with tf.Session() as sess:
 
         saver = tf.train.import_meta_graph(SAVED_PATH + '.meta')
         saver.restore(sess, tf.train.latest_checkpoint(os.path.dirname(SAVED_PATH)))
+    else:
+        print('no checkpont found, initialize variables...')
+        saver = tf.train.Saver()
 
     for epoch in range(n_epochs):
         n_batches = num_examples // batch_size
@@ -104,7 +116,9 @@ with tf.Session() as sess:
     
     codings_rnd = np.random.normal(size=[n_digits, n_hidden3])
     outputs_val = outputs.eval(feed_dict={hidden3: codings_rnd})
-#%%    
+
+""" Evaluation"""
+    
 def plot_image(image, shape=[32, 32, 3]):
     plt.imshow(image.reshape(shape), interpolation="nearest")
     plt.axis("off")
@@ -118,7 +132,8 @@ def plot_multiple_images(images, n_rows, n_cols, pad=2):
         plt.subplot(n_digits//5, 5, iteration + 1)
 
         plot_image(images[iteration])   
-#%% generate random samples
+        
+# generate random samples
 def generate_random_img() :        
     plt.figure(figsize=(16,50)) # not shown in the book
     for iteration in range(n_digits):
@@ -139,14 +154,17 @@ def encode_decode():
         saver.restore(sess, tf.train.latest_checkpoint(os.path.dirname(SAVED_PATH)))
         print( '''Encode''' )
         codings_val = codings.eval(feed_dict={X:X_eval})
-
+        
+    with tf.Session() as sess :
+        init.run()
+        saver = tf.train.import_meta_graph(SAVED_PATH + '.meta')
+        saver.restore(sess, tf.train.latest_checkpoint(os.path.dirname(SAVED_PATH)))
         print( '''Decode''' )    
         outputs_val = outputs.eval(feed_dict={codings: codings_val})
     
     print("output images")
     plot_multiple_images(outputs_val, n_digits//5 ,5)
-
-#%% 
+#%%
 def interpolate_digits():
 
     print(""" Interpolate digits  """)

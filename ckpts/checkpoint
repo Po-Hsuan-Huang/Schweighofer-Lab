@@ -1,0 +1,2 @@
+model_checkpoint_path: "/home/pohsuanh/Documents/Schweighofer-Lab/ckpts/variational_cifar.ckpt"
+all_model_checkpoint_paths: "/home/pohsuanh/Documents/Schweighofer-Lab/ckpts/variational_cifar.ckpt"
