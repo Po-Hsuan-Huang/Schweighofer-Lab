@@ -13,14 +13,13 @@ run ''python CIFAR10_VAE.py''  to train the model in terminal.
 In Spyder editor, run 'generate_random_img()', 'encode_decode()','interpolate_digits()' to evaluate training results.
 
 """
+# clear variables in Spyter, IPython.
 
-# Common imports
 import numpy as np
 import sys, os
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from functools import partial
-<<<<<<< HEAD
 # to make this notebook's output stable across runs
 
 RESUME = False
@@ -28,7 +27,7 @@ RESUME = False
 n_digits = 40
 n_epochs = 2
 batch_size = 150
-SAVED_PATH ='/home/pohsuanh/Documents/Schweighofer Lab/variational_cifar.ckpt'
+SAVED_PATH ='/home/pohsuanh/Documents/Schweighofer Lab/GitHub/Schweighofer-Lab/ckpts/variational_cifar'
     
 n_inputs = 32 * 32 * 3
 n_hidden1 = 500
@@ -38,13 +37,8 @@ n_hidden4 = n_hidden2
 n_hidden5 = n_hidden1
 n_outputs = n_inputs
 learning_rate = 0.001
-=======
 
 """Training"""
->>>>>>> 02bff50d97b7c70ded3fb6d8f7ef81d5b5c7dc2b
-
-
-
 
 # Load CIFAR10
 (x_train, y_train), (x_test, y_test) = tf.keras.datasets.cifar10.load_data()
@@ -62,7 +56,6 @@ def get_next( X , batch_size ):
 def reset_graph(seed=42):
     tf.reset_default_graph()
     tf.set_random_seed(seed)
-<<<<<<< HEAD
     np.random.seed(seed)   
     
 if os.path.isfile(SAVED_PATH + '.meta') :    
@@ -78,77 +71,48 @@ else :
 #    n_hidden5 = n_hidden1
 #    n_outputs = n_inputs
 #    learning_rate = 0.001
-    
-    initializer = tf.contrib.layers.variance_scaling_initializer()
-    my_dense_layer = partial(
-        tf.layers.dense,
-        activation=tf.nn.elu,
-        kernel_initializer=initializer)
-    
-    X = tf.placeholder(tf.float32, [None, n_inputs], name = 'input')
-    hidden1 = my_dense_layer(X, n_hidden1, name='h1')
-    hidden2 = my_dense_layer(hidden1, n_hidden2, name='h2')
-    hidden3_mean = my_dense_layer(hidden2, n_hidden3, activation=None, name='h3')
-    hidden3_gamma = my_dense_layer(hidden2, n_hidden3, activation=None, name='latent_sapce')
-    noise = tf.random_normal(tf.shape(hidden3_gamma), dtype=tf.float32, name='noise')
-    hidden3 = hidden3_mean + tf.exp(0.5 * hidden3_gamma) * noise
-    hidden4 = my_dense_layer(hidden3, n_hidden4, name='h4')
-    hidden5 = my_dense_layer(hidden4, n_hidden5, name='h5')
-    logits = my_dense_layer(hidden5, n_outputs, activation=None , name='logits')
-    outputs = tf.sigmoid(logits, name='outputs')
-    
-    xentropy = tf.nn.sigmoid_cross_entropy_with_logits(labels=X, logits=logits, name='entropy')
-    reconstruction_loss = tf.reduce_sum(xentropy, name='recon_error')
-    latent_loss = 0.5 * tf.reduce_sum(
-        tf.exp(hidden3_gamma) + tf.square(hidden3_mean) - 1 - hidden3_gamma, name='latent_loss')
-    loss = reconstruction_loss + latent_loss
-    
-    optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
-    training_op = optimizer.minimize(loss)
-    
-    init = tf.global_variables_initializer()
-=======
-    np.random.seed(seed)
-    
-reset_graph()
-n_inputs = 32 * 32 * 3
-n_hidden1 = 500
-n_hidden2 = 500
-n_hidden3 = 20  # codings
-n_hidden4 = n_hidden2
-n_hidden5 = n_hidden1
-n_outputs = n_inputs
-learning_rate = 0.001
->>>>>>> 02bff50d97b7c70ded3fb6d8f7ef81d5b5c7dc2b
+#with tf.variable_scope("VAE", reuse=tf.AUTO_REUSE):
+initializer = tf.contrib.layers.variance_scaling_initializer()
+my_dense_layer = partial(
+tf.layers.dense,
+activation=tf.nn.elu,
+kernel_initializer=initializer, reuse = tf.AUTO_REUSE)
 
+X = tf.placeholder(tf.float32, [None, n_inputs], name = 'input')
+hidden1 = my_dense_layer(X, n_hidden1, name='h1')
+hidden2 = my_dense_layer(hidden1, n_hidden2, name='h2')
+hidden3_mean = my_dense_layer(hidden2, n_hidden3, activation=None, name='h3')
+hidden3_gamma = my_dense_layer(hidden2, n_hidden3, activation=None, name='latent_sapce')
+noise = tf.random_normal(tf.shape(hidden3_gamma), dtype=tf.float32, name='noise')
+hidden3 = hidden3_mean + tf.exp(0.5 * hidden3_gamma) * noise
+hidden4 = my_dense_layer(hidden3, n_hidden4, name='h4')
+hidden5 = my_dense_layer(hidden4, n_hidden5, name='h5')
+logits = my_dense_layer(hidden5, n_outputs, activation=None , name='logits')
+outputs = tf.sigmoid(logits, name='outputs')
 
-<<<<<<< HEAD
-=======
-n_digits = 40
-n_epochs = 2
-batch_size = 150
-SAVED_PATH ='/home/pohsuanh/Documents/Schweighofer-Lab/ckpts/variational_cifar.ckpt'
->>>>>>> 02bff50d97b7c70ded3fb6d8f7ef81d5b5c7dc2b
+xentropy = tf.nn.sigmoid_cross_entropy_with_logits(labels=X, logits=logits, name='entropy')
+reconstruction_loss = tf.reduce_sum(xentropy, name='recon_error')
+latent_loss = 0.5 * tf.reduce_sum(
+tf.exp(hidden3_gamma) + tf.square(hidden3_mean) - 1 - hidden3_gamma, name='latent_loss')
+loss = reconstruction_loss + latent_loss
+
+optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
+training_op = optimizer.minimize(loss)
+
+init = tf.global_variables_initializer()
+saver = tf.train.Saver()
+
 with tf.Session() as sess:
     
     print('initailize graph variables')
     
     if os.path.isfile(SAVED_PATH + '.meta') :
-            
         print('load session checkpoint...')
-        
-        saver = tf.train.import_meta_graph(SAVED_PATH + '.meta')
         saver.restore(sess, tf.train.latest_checkpoint(os.path.dirname(SAVED_PATH)))
-<<<<<<< HEAD
         
     else:
         print('no checkpont found, initialize variables...')
         init.run()
-=======
-    else:
-        print('no checkpont found, initialize variables...')
->>>>>>> 02bff50d97b7c70ded3fb6d8f7ef81d5b5c7dc2b
-        saver = tf.train.Saver()
 
             
     for epoch in range(n_epochs):
