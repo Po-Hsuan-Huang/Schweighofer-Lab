@@ -110,6 +110,12 @@ after install Anaconda, create an virtual environment 'tensorflow' in Python3 :
 
 # How to run tests
 
+First of all, you need to modify the scipt and specify the folder where to save the checkpoints(trained model parameters). 
+
+    SAVED_PATH ='/Your/git/directory/Schweighofer-Lab/ckpts/variational_cifar'
+
+Once the model is trained and the variable saved in folder, the script will try to restore variables from the saved model to resume training. 
+
 Each script is independent from each other. So each of them can be executed independently by typing in your terminal :
 
     $ python the/path/to/the/script.py
@@ -120,7 +126,10 @@ Or run script in Spyder editor by typing in your terminal  :
 
 In Spyder3, open the respective file by clicking the open file icon on the toolbar in the API
   
-However, it is recommended to run the code in Python edictor such as Spyder3 https://pythonhosted.org/spyder/ to produce images correctly.
+However, it is recommended to run the code in Python editor such as Spyder3 https://pythonhosted.org/spyder/ to run evaluate functions interactively. 
+
+**note that you have to restart the editor kernel, after each training, since the previous variables will be kept in kernel and cuases confusion to the script**
+
 # Results of Cifar 10 (50 Epochs)
 
 ### Generate images from random latent state
