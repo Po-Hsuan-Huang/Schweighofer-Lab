@@ -133,7 +133,7 @@ However, it is recommended to run the code in Python editor such as Spyder3 http
 # Results of Cifar 10 (50 Epochs)
 
 ### Generate images from random latent state
-![Generate images from random latent state](https://github.com/Po-Hsuan-Huang/Schweighofer-Lab/blob/master/random_generated_imgs_cifar10.png)
+![Generate images from random latent state](https://github.com/Po-Hsuan-Huang/Schweighofer-Lab/blob/master/random_generated_imgs_cifar10_200epochs.png)
 
 ### Encode Image
 ![Encode Image](https://github.com/Po-Hsuan-Huang/Schweighofer-Lab/blob/master/encode_imgs_cifar10.png )
